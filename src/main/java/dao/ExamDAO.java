@@ -74,19 +74,20 @@ public class ExamDAO extends DbUtil {
 	
 
 	//일부 내용 가져오기 - 해당되는 게시물을 보기 위한 작업
-	public ExamVO read(ExamVO vo) {
+	public List<ExamVO> read(String q) {
 		// 코드 작성
 		
 
 		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT * FROM exam WHERE num = ? ");
+		sql.append(" SELECT * FROM quiz WHERE qs like ? ");
 
-		ExamVO examVo = null;
-		
 		Connection conn = null;
 		PreparedStatement stmt = null;
-		ExamVO examvo = null;
 		ResultSet rs = null;
+		
+		ExamVO examvo = null;
+		List<ExamVO> list = new ArrayList<ExamVO>();
+				
 
 		try {
 			
@@ -96,18 +97,19 @@ public class ExamDAO extends DbUtil {
 			// PreparedStatment(SQL문 + 실행)
 			stmt = conn.prepareStatement(sql.toString());
 
-			stmt.setInt(1, vo.getNum());
+			stmt.setString(1, "%"+q+"%");
 
 			rs = stmt.executeQuery();
 			
-			if (rs.next()) {
-//				examVo = new ExamVO(rs.getInt("num"),
-//						rs.getString("varcharTest"), 
-//						rs.getString("charTest"),
-//						rs.getDouble("doubleTest"), 
-//						rs.getDate("dateTest"), 
-//						rs.getTimestamp("dateTimeTest")
-//						);
+			while(rs.next()) {
+				examvo = new ExamVO(
+						
+						rs.getInt("num"),
+						rs.getString("qs"), 
+						rs.getString("an")
+						
+						);
+				list.add(examvo);
 
 			}
 
@@ -120,7 +122,7 @@ public class ExamDAO extends DbUtil {
 		}
 
 		// 코드작성 끝
-		return examVo;
+		return list;
 
 	}
 

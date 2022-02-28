@@ -42,13 +42,15 @@
 
 			<button type="submit" class="btn btn-default">문제 추가하기</button>
 			<div>
-				<input type="text" class="form-control" required="required"
-					name="q" id="q" placeholder="질문을 입력해주세요." onkeyup="aaaa('up')">
+				<input type="text" class="form-control" required="required" name="q"
+					id="q" placeholder="질문을 입력해주세요." onkeyup="aaaa(this)">
 			</div>
 
 
 
 		</form>
+		<div id="res">검색된 데이터가 없습니다. 질문을 입력해주세요.</div>
+
 
 	</div>
 
@@ -69,8 +71,29 @@
 
 		}
 		function aaaa(str) {
-			let q = document.getElementById('q').value;
-			console.log(q + " : " + str);//웹 콘솔에서 작업이 나타난다.
+
+			//console.log(str.value);//웹 콘솔에서 작업이 나타난다. 입력한 값 속성 value
+			
+			//ajax 문법
+			$.ajax({
+				  url : './historyAjaxAct.jsp'
+				, type : 'post' // get
+				, dataType : 'html'
+				, async : false // 동기식으로 실행 (생략하면 비동기)
+				, data : {
+					'q' : str.value
+					//'code2' : '02'
+				}
+			// data : $("#dataForm").serialize()      // 이렇게 폼을 통째로 넘길수도 있다
+			}).done(function(response) {
+				console.log(response);
+				document.getElementById('res').innerHTML = response;
+
+			}).fail(function(response) {
+				alert('서버 오류')
+				return false;
+			});
+
 		}
 	</script>
 
